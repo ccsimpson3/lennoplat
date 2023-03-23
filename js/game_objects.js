@@ -20,7 +20,7 @@ class Player extends GameObject {
         this.keys = {
             left: "ArrowLeft",
             right: "ArrowRight",
-            up: "ArrowUp",
+            up: "Space",
             down: "ArrowDown",
         };
     }
