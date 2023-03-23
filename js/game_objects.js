@@ -24,9 +24,6 @@ class Player extends GameObject {
       down: "ArrowDown",
     };
   }
-  handleClicks(event) {
-    console.log(event);
-  }
   handleKeys(event) {
     if (event.type === "keydown") {
       if (event.code == this.keys.up && !this.keydown.up && this.is_standing) {
@@ -119,6 +116,8 @@ class Player extends GameObject {
     while (!it.done) {
       if (it.value.collectable) {
         level.remove(it.value);
+        var coinCollect = new Audio("sounds/effects/coin-collect.mp3");
+        coinCollect.play();
         coinCount++;
         //coin count update
       } else if (prevrect.bottom <= it.value.top) {
@@ -178,6 +177,8 @@ class Platform extends GameObject {
   constructor(master, x, y, w, h, color) {
     super(master, x, y, w, h);
     this.color = color;
+    // this.color1 = color1;
+    // this.color2 = color2;
   }
 }
 
@@ -194,14 +195,85 @@ class Coin extends GameObject {
 }
 
 class Projectile extends GameObject {
-  constructor(master, x, y) {
-    var size = 36;
-    super(master, x, y, size, size);
+  constructor(master, x, y, name, level) {
+    // var size = 36;
+    super(master, x, y, 34, 22);
+    this.vx = Math.round(5 * (Math.random() - 0.5));
+    this.vy = 0;
+    this.name = name;
+    this.level = level;
+    this.directionX;
+    this.directionY;
     this.collectable = false;
     this.damage = 10;
     this.color = "#FFD700";
     this.image = new Image();
-    this.image.src = "img/sprites/items_spritesheet.png";
-    this.image_crop = sprite_ani.items.coinGold;
+    this.image.src = "img/projectiles/laser-beat.png";
+    // this.image_crop = sprite_ani.items.coinGold;
+  }
+
+  accelerate() {
+    var MAXV = 2;
+    // this.vx = 1;
+    if (this.directionX == "right") {
+      this.vx = (this.vx - MAXV) * 0.9 + MAXV;
+    } else {
+      this.vx = (this.vx + MAXV) * 0.9 - MAXV;
+    }
+
+    if (this.directionY == "up") {
+      this.vy -= 0.001;
+    } else {
+      this.vy += 0.001;
+    }
+
+    // if (this.keydown.left && !this.keydown.down) {
+    //   this.vx = (this.vx + MAXV) * 0.9 - MAXV;
+    //   this.is_flipped = true;
+    // } else if (this.keydown.right && !this.keydown.down) {
+    //   this.vx = (this.vx - MAXV) * 0.9 + MAXV;
+    //   this.is_flipped = false;
+    // } else {
+    //   this.vx *= 0.7;
+    //   if (Math.abs(this.vx) < 0.5) this.vx = 0;
+    // }
+    // this.vy += 2;
+    // if (this.keydown.up && !this.keydown.down) {
+    //   this.vy -= 1;
+    // }
+  }
+
+  update() {
+    this.accelerate();
+    this.y += this.vy;
+    this.x += this.vx;
+
+    if (this.left < 0) {
+      this.vx = 0;
+      this.left = 0;
+      this.level.remove(this);
+    }
+    if (this.right > this.master.canvas.width) {
+      this.vx = 0;
+      this.right = this.master.canvas.width;
+      this.level.remove(this);
+    }
+
+    // var collisions = this.level.collide(this);
+    // var it = collisions.next();
+    // while (!it.done) {
+    //   if (it.value.collectable) {
+    //     level.remove(it.value);
+    //     coinCount++;
+
+    //   } else if (prevrect.bottom <= it.value.top) {
+    //     this.bottom = it.value.top;
+    //     this.vy = 0;
+    //   }
+    //   it = collisions.next();
+    // }
+
+    // // Prepare animations
+    // this.set_animation();
   }
 }

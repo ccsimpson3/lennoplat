@@ -6,6 +6,8 @@ body {
 canvas {
   width: 100%;
   height: 930px;
-  background: #1fda9a;
+
+  background-image: url("../img/bg/main.jpg");
+  background-size: cover;
 }
 /*# sourceMappingURL=style.css.map */

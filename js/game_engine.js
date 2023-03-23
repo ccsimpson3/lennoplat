@@ -70,7 +70,9 @@ class GameObject {
                                   this.h + bpd + tpd);
 
         } else {
+            if(this.color){
             this.master.fillStyle = this.color;
+            }
             this.master.fillRect(this.x, this.y, this.w, this.h);
         }
     }
